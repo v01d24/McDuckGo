@@ -158,7 +158,7 @@ class BrowserTabViewModel(
         val showSearchIcon: Boolean = false,
         val showClearButton: Boolean = false,
         val showTabsButton: Boolean = true,
-        val fireButton: FireButton = FireButton.Visible(),
+        val showBookmarksButton: Boolean = true,
         val showMenuButton: Boolean = true,
         val canSharePage: Boolean = false,
         val canAddBookmarks: Boolean = false,
@@ -173,18 +173,6 @@ class BrowserTabViewModel(
         val addToHomeVisible: Boolean = false,
         val showDaxIcon: Boolean = false
     )
-
-    sealed class FireButton {
-        data class Visible(val pulseAnimation: Boolean = false) : FireButton()
-        object Gone : FireButton()
-
-        fun playPulseAnimation(): Boolean {
-            return when (this) {
-                is Visible -> this.pulseAnimation
-                is Gone -> false
-            }
-        }
-    }
 
     data class OmnibarViewState(
         val omnibarText: String = "",
@@ -306,12 +294,6 @@ class BrowserTabViewModel(
     private val autoCompletePublishSubject = PublishRelay.create<String>()
     private val fireproofWebsiteState: LiveData<List<FireproofWebsiteEntity>> = fireproofWebsiteRepository.getFireproofWebsites()
 
-    @ExperimentalCoroutinesApi
-    @FlowPreview
-    private val showPulseAnimation: LiveData<Boolean> = ctaViewModel.showFireButtonPulseAnimation.asLiveData(
-        context = viewModelScope.coroutineContext
-    )
-
     private var autoCompleteDisposable: Disposable? = null
     private var site: Site? = null
     private lateinit var tabId: String
@@ -323,18 +305,6 @@ class BrowserTabViewModel(
 
     private val fireproofWebsitesObserver = Observer<List<FireproofWebsiteEntity>> {
         browserViewState.value = currentBrowserViewState().copy(isFireproofWebsite = isFireproofWebsite())
-    }
-
-    @ExperimentalCoroutinesApi
-    private val fireButtonAnimation = Observer<Boolean> { shouldShowAnimation ->
-        Timber.i("shouldShowAnimation $shouldShowAnimation")
-        if (currentBrowserViewState().fireButton is FireButton.Visible) {
-            browserViewState.value = currentBrowserViewState().copy(fireButton = FireButton.Visible(pulseAnimation = shouldShowAnimation))
-        }
-
-        if (shouldShowAnimation) {
-            registerAndScheduleDismissAction()
-        }
     }
 
     @ExperimentalCoroutinesApi
@@ -366,7 +336,6 @@ class BrowserTabViewModel(
         configureAutoComplete()
         fireproofWebsiteState.observeForever(fireproofWebsitesObserver)
         navigationAwareLoginDetector.loginEventLiveData.observeForever(loginDetectionObserver)
-        showPulseAnimation.observeForever(fireButtonAnimation)
     }
 
     fun loadData(tabId: String, initialUrl: String?, skipHome: Boolean) {
@@ -436,7 +405,6 @@ class BrowserTabViewModel(
         autoCompleteDisposable = null
         fireproofWebsiteState.removeObserver(fireproofWebsitesObserver)
         navigationAwareLoginDetector.loginEventLiveData.removeObserver(loginDetectionObserver)
-        showPulseAnimation.removeObserver(fireButtonAnimation)
         super.onCleared()
     }
 
@@ -1228,11 +1196,7 @@ class BrowserTabViewModel(
             showPrivacyGrade = showPrivacyGrade,
             showSearchIcon = showSearchIcon,
             showTabsButton = showControls,
-            fireButton = if (showControls) {
-                FireButton.Visible(pulseAnimation = showPulseAnimation.value ?: false)
-            } else {
-                FireButton.Gone
-            },
+            showBookmarksButton = showControls,
             showMenuButton = showControls,
             showClearButton = showClearButton,
             showDaxIcon = shouldShowDaxIcon(url, showPrivacyGrade)

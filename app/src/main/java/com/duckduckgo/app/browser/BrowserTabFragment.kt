@@ -125,7 +125,6 @@ import com.duckduckgo.app.location.ui.SystemLocationPermissionDialog
 import com.duckduckgo.app.privacy.renderer.icon
 import com.duckduckgo.app.statistics.VariantManager
 import com.duckduckgo.app.statistics.pixels.Pixel
-import com.duckduckgo.app.statistics.pixels.Pixel.PixelParameter.FIRE_BUTTON_STATE
 import com.duckduckgo.app.survey.model.Survey
 import com.duckduckgo.app.survey.ui.SurveyActivity
 import com.duckduckgo.app.tabs.model.TabEntity
@@ -266,8 +265,8 @@ class BrowserTabFragment :
     private val tabsButton: TabSwitcherButton?
         get() = appBarLayout.tabsMenu
 
-    private val fireMenuButton: ViewGroup?
-        get() = appBarLayout.fireIconMenu
+    private val bookmarksButton: ViewGroup?
+        get() = appBarLayout.bookmarksMenu
 
     private val menuButton: ViewGroup?
         get() = appBarLayout.browserMenu
@@ -1427,7 +1426,6 @@ class BrowserTabFragment :
     inner class BrowserTabFragmentDecorator {
 
         fun decorateWithFeatures() {
-            decorateToolbarWithButtons()
             createPopupMenu()
             configureShowTabSwitcherListener()
             configureLongClickOpensNewTabListener()
@@ -1435,36 +1433,8 @@ class BrowserTabFragment :
 
         fun updateToolbarActionsVisibility(viewState: BrowserViewState) {
             tabsButton?.isVisible = viewState.showTabsButton
-            fireMenuButton?.isVisible = viewState.fireButton is FireButton.Visible
+            bookmarksButton?.isVisible = viewState.showBookmarksButton
             menuButton?.isVisible = viewState.showMenuButton
-
-            if (viewState.fireButton.playPulseAnimation()) {
-                appBarLayout.setExpanded(true, true)
-                omnibarScrolling.disableOmnibarScrolling(toolbarContainer)
-                playPulseAnimation()
-            } else {
-                omnibarScrolling.enableOmnibarScrolling(toolbarContainer)
-                pulseAnimation.stop()
-            }
-        }
-
-        private fun playPulseAnimation() {
-            toolbarContainer.doOnLayout {
-                pulseAnimation.playOn(fireIconImageView)
-            }
-        }
-
-        private fun decorateToolbarWithButtons() {
-            fireMenuButton?.show()
-            fireMenuButton?.setOnClickListener {
-                browserActivity?.launchFire()
-                pixel.fire(
-                    Pixel.PixelName.MENU_ACTION_FIRE_PRESSED.pixelName,
-                    mapOf(FIRE_BUTTON_STATE to pulseAnimation.isActive.toString())
-                )
-            }
-
-            tabsButton?.show()
         }
 
         private fun createPopupMenu() {
@@ -1526,6 +1496,14 @@ class BrowserTabFragment :
                     pixel.fire(Pixel.PixelName.MENU_ACTION_FIRE_PRESSED)
                     browserActivity?.launchFire()
                 }
+            }
+            bookmarksButton?.setOnClickListener {
+                browserActivity?.launchBookmarks()
+                pixel.fire(Pixel.PixelName.MENU_ACTION_BOOKMARKS_PRESSED.pixelName)
+            }
+            bookmarksButton?.setOnLongClickListener {
+                launch { viewModel.onBookmarkAddRequested() }
+                return@setOnLongClickListener true
             }
             browserMenu.setOnClickListener {
                 hideKeyboardImmediately()
