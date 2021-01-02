@@ -14,7 +14,7 @@ android {
     compileSdkVersion 29
     ndkVersion '21.0.6113669'
     defaultConfig {
-        applicationId "com.duckduckgo.mobile.android"
+        applicationId "com.duckduckgo.mobile.android.mod"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode buildVersionCode()

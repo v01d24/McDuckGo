@@ -43,7 +43,7 @@
                 app:contentInsetEnd="0dp"
                 app:contentInsetStart="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/fireIconMenu"
+                app:layout_constraintEnd_toStartOf="@id/tabsMenu"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:popupTheme="@style/AppTheme.Dark.PopupOverlay">
@@ -164,30 +164,6 @@
                 tools:progress="50"
                 tools:visibility="visible" />
 
-            <FrameLayout
-                android:id="@+id/fireIconMenu"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="2dp"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tabsMenu"
-                app:layout_constraintStart_toEndOf="@id/toolbar"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
-
-                <ImageView
-                    android:id="@+id/fireIconImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="@string/browserPopupMenu"
-                    android:padding="3dp"
-                    android:src="@drawable/ic_fire" />
-            </FrameLayout>
-
             <com.duckduckgo.app.browser.TabSwitcherButton
                 android:id="@+id/tabsMenu"
                 android:layout_width="wrap_content"
@@ -198,9 +174,33 @@
                 android:paddingTop="6dp"
                 android:paddingBottom="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/browserMenu"
-                app:layout_constraintStart_toEndOf="@id/fireIconMenu"
+                app:layout_constraintEnd_toStartOf="@id/bookmarksMenu"
+                app:layout_constraintStart_toEndOf="@id/toolbar"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <FrameLayout
+                android:id="@+id/bookmarksMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="2dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/browserMenu"
+                app:layout_constraintStart_toEndOf="@id/tabsMenu"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/bookmarksIconImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/browserPopupMenu"
+                    android:padding="3dp"
+                    android:src="@drawable/ic_bookmarks" />
+            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/browserMenu"

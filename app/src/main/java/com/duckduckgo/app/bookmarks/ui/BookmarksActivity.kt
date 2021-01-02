@@ -133,7 +133,7 @@ class BookmarksActivity : DuckDuckGoActivity() {
     }
 
     private fun openBookmark(bookmark: BookmarkEntity) {
-        startActivity(BrowserActivity.intent(this, bookmark.url))
+        startActivity(BrowserActivity.intent(this, bookmark.url, launchedFromBookmark = true))
         finish()
     }
 
