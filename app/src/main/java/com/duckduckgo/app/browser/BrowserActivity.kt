@@ -195,6 +195,14 @@ class BrowserActivity : DuckDuckGoActivity(), CoroutineScope by MainScope() {
             return
         }
 
+        if (intent.getBooleanExtra(LAUNCHED_FROM_BOOKMARK_EXTRA, false)) {
+            val sharedText = intent.intentText
+            if (sharedText != null) {
+                currentTab?.submitQuery(sharedText)
+            }
+            return;
+        }
+
         if (intent.getBooleanExtra(PERFORM_FIRE_ON_ENTRY_EXTRA, false)) {
 
             Timber.i("Clearing everything as a result of $PERFORM_FIRE_ON_ENTRY_EXTRA flag being set")
@@ -368,18 +376,21 @@ class BrowserActivity : DuckDuckGoActivity(), CoroutineScope by MainScope() {
             context: Context,
             queryExtra: String? = null,
             newSearch: Boolean = false,
-            launchedFromFireAction: Boolean = false
+            launchedFromFireAction: Boolean = false,
+            launchedFromBookmark: Boolean = false
         ): Intent {
             val intent = Intent(context, BrowserActivity::class.java)
             intent.putExtra(EXTRA_TEXT, queryExtra)
             intent.putExtra(NEW_SEARCH_EXTRA, newSearch)
             intent.putExtra(LAUNCHED_FROM_FIRE_EXTRA, launchedFromFireAction)
+            intent.putExtra(LAUNCHED_FROM_BOOKMARK_EXTRA, launchedFromBookmark)
             return intent
         }
 
         const val NEW_SEARCH_EXTRA = "NEW_SEARCH_EXTRA"
         const val PERFORM_FIRE_ON_ENTRY_EXTRA = "PERFORM_FIRE_ON_ENTRY_EXTRA"
         const val LAUNCHED_FROM_FIRE_EXTRA = "LAUNCHED_FROM_FIRE_EXTRA"
+        private const val LAUNCHED_FROM_BOOKMARK_EXTRA = "LAUNCHED_FROM_BOOKMARK_EXTRA"
         const val LAUNCH_FROM_DEFAULT_BROWSER_DIALOG = "LAUNCH_FROM_DEFAULT_BROWSER_DIALOG"
 
         private const val APP_ENJOYMENT_DIALOG_TAG = "AppEnjoyment"
