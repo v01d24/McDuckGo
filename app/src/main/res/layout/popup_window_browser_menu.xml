@@ -152,6 +152,12 @@
                 style="@style/BrowserTextMenuItem"
                 android:text="@string/settingsMenuItemTitle" />
 
+            <TextView
+                android:id="@+id/settingsFireItem"
+                style="@style/BrowserTextMenuItem"
+                android:textColor="@color/brickOrange"
+                android:text="@string/fireMenu" />
+
         </LinearLayout>
 
     </ScrollView>

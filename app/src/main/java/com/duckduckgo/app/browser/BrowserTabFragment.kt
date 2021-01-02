@@ -1522,6 +1522,10 @@ class BrowserTabFragment :
                     pixel.fire(Pixel.PixelName.MENU_ACTION_ADD_TO_HOME_PRESSED)
                     viewModel.onPinPageToHomeSelected()
                 }
+                onMenuItemClicked(view.settingsFireItem) {
+                    pixel.fire(Pixel.PixelName.MENU_ACTION_FIRE_PRESSED)
+                    browserActivity?.launchFire()
+                }
             }
             browserMenu.setOnClickListener {
                 hideKeyboardImmediately()
